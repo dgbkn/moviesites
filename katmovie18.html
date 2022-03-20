@@ -88,7 +88,7 @@
           // content = content.replace('https://olamovies.site', 'https://thawning.tanishagoyal.repl.co/api?uri=https://olamovies.site');
       
           if(Array.isArray(i["_embedded"]["wp:featuredmedia"])){
-                var img = "https://thawning.tanishagoyal.repl.co/api?uri="  + i["_embedded"]["wp:featuredmedia"][0]["source_url"];
+                var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
               }
               else{
                 var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
@@ -175,7 +175,7 @@
               content = content.replaceAll('/download/?key=', 'https://flaskstreamer.lolhoinc.repl.co/olamov?key=');
 
               if(Array.isArray(i["_embedded"]["wp:featuredmedia"])){
-                var img = "https://thawning.tanishagoyal.repl.co/api?uri="  + i["_embedded"]["wp:featuredmedia"][0]["source_url"];
+                var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
               }
               else{
                 var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
