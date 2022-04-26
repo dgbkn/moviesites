@@ -134,7 +134,7 @@ function getSearchurl(query){
     return `${baseUrl + domain +`/wp-json/wp/v2/posts?search=${query}&per_page=70` }`;
 }
 
-var latestPosts = baseUrl + domain +"/wp-json/wp/v2/posts?per_page=50";
+var latestPosts = baseUrl + domain +"/wp-json/wp/v2/posts";
 
 // async function getLatestPosts(){
 //     return makeRequest("GET", latestPosts);
