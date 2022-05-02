@@ -153,6 +153,7 @@
                         var doc = parser.parseFromString(content, "text/html");
                         var a = doc.getElementsByTagName("a");
                         for (c = 0; c < a.length; c++) {
+                            a[c].target = "";
                             a[c].href = "javascript:loadEpisodes('" + domaiN + a[c].href.replace("https://moviesites.pages.dev","") + "');";
                         }
 
@@ -259,6 +260,7 @@
                             var doc = parser.parseFromString(content, "text/html");
                             var a = doc.getElementsByTagName("a");
                             for (c = 0; c < a.length; c++) {
+                                a[c].target = "";
                                 a[c].href = "javascript:loadEpisodes('" + domaiN  + a[c].href.replace("https://moviesites.pages.dev","") + "');";
                             }
 
@@ -396,6 +398,7 @@
                         var a = doc.getElementsByTagName("a");
                         for (c = 0; c < a.length; c++) {
                             a[c].href = "javascript:loadEpisodes('" +domain + a[c].href.replace("https://moviesites.pages.dev","") + "');";
+                            a[c].target = "";
                         }
 
 
