@@ -337,6 +337,8 @@
 
 
         function loadEpisodes(url) {
+            document.querySelector('body > div.modal-backdrop.fade.show').remove();
+
             document.getElementById('mainContent').innerHTML = ``;
             document.getElementById("Loader").style = "";
 
