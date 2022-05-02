@@ -114,7 +114,7 @@
 
         function getSearchurl(query) {
             // return `${baseUrl + encodeURIComponent(`/wp-json/wp/v2/search?_embed&search=${query}&per_page=10`) }`;
-            return `${baseUrl + encodeURIComponent(domaiN+ `/wp-json/wp/v2/posts?_embed&search=${query}&per_page=70`)}`;
+            return `${baseUrl + encodeURIComponent(domaiN + `/wp-json/wp/v2/posts?_embed&search=${query}&per_page=70`)}`;
         }
 
         var latestPosts = baseUrl + encodeURIComponent(domaiN + "/wp-json/wp/v2/posts?_embed=1&per_page=50");
@@ -131,36 +131,53 @@
     <!-- Custom scripts -->
     <script type="text/javascript">
 
-        makeRequest("GET", latestPosts).then(response => {
+        function initAgain() {
 
-            if (response.status == 200) {
-                console.log(response.responseText);
+            makeRequest("GET", latestPosts).then(response => {
 
-                var obj = JSON.parse(response.responseText);
+                if (response.status == 200) {
+                    console.log(response.responseText);
 
-                console.log(obj);
+                    var obj = JSON.parse(response.responseText);
 
-                document.getElementById("Loader").style = "display:none!important";
-                var res = "";
+                    console.log(obj);
 
-                obj.forEach((i) => {
+                    document.getElementById("Loader").style = "display:none!important";
+                    var res = "";
 
-                    var content = i['content']['rendered'];
-                    // content = content.replace("https://i.imgur.com/", "https://thawning.tanishagoyal.repl.co/api?uri=https://i.imgur.com/");
-                    content = content.replaceAll('/download/?key=', 'https://flaskstreamer.lolhoinc.repl.co/olamov?key=');
-                    // content = content.replace('https://olamovies.site', 'https://thawning.tanishagoyal.repl.co/api?uri=https://olamovies.site');
+                    obj.forEach((i) => {
 
-                    if (Array.isArray(i["_embedded"]["wp:featuredmedia"])) {
-                        var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
-                    }
-                    else {
-                        var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
-                    }
+                        var content = i['content']['rendered'];
+
+                        const parser = new DOMParser();
+                        var doc = parser.parseFromString(content, "text/html");
+                        var a = doc.getElementsByTagName("a");
+                        for (c = 0; c < a.length; c++) {
+                            a[c].href = "javascript:loadEpisodes('" + domaiN + a[c].href + "');";
+                        }
+
+                        var aa = doc.getElementsByTagName("img");
+                        for (c = 0; c < aa.length; c++) {
+                            aa[c].style.maxWidth = "100%";
+                            aa[c].style.height = "auto";
+                        }
 
 
-                    // console.log(i);
+                        // content = content.replace("https://i.imgur.com/", "https://thawning.tanishagoyal.repl.co/api?uri=https://i.imgur.com/");
+                        content = content.replaceAll('/download/?key=', 'https://flaskstreamer.lolhoinc.repl.co/olamov?key=');
+                        // content = content.replace('https://olamovies.site', 'https://thawning.tanishagoyal.repl.co/api?uri=https://olamovies.site');
 
-                    res = res + `
+                        if (Array.isArray(i["_embedded"]["wp:featuredmedia"])) {
+                            var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
+                        }
+                        else {
+                            var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+                        }
+
+
+                        // console.log(i);
+
+                        res = res + `
         
   
 <!-- Modal -->
@@ -196,18 +213,20 @@
 </div>
   `;
 
-                });
+                    });
 
 
-                document.getElementById('mainContent').innerHTML = res;
+                    document.getElementById('mainContent').innerHTML = res;
 
-            }
-
-
-        });
+                }
 
 
+            });
 
+        }
+
+
+        initAgain();
 
 
         function doSearch() {
@@ -235,6 +254,20 @@
                         obj.forEach((i) => {
 
                             var content = i['content']['rendered'];
+
+                            const parser = new DOMParser();
+                            var doc = parser.parseFromString(content, "text/html");
+                            var a = doc.getElementsByTagName("a");
+                            for (c = 0; c < a.length; c++) {
+                                a[c].href = "javascript:loadEpisodes('" + domaiN  + a[c].href + "');";
+                            }
+
+                            var aa = doc.getElementsByTagName("img");
+                            for (c = 0; c < aa.length; c++) {
+                                aa[c].style.maxWidth = "100%";
+                                aa[c].style.height = "auto";
+                            }
+
                             content = content.replaceAll('/download/?key=', 'https://flaskstreamer.lolhoinc.repl.co/olamov?key=');
 
                             if (Array.isArray(i["_embedded"]["wp:featuredmedia"])) {
@@ -297,6 +330,96 @@
 
 
             }
+        }
+
+
+
+        function loadEpisodes(url) {
+            document.getElementById('mainContent').innerHTML = ``;
+            document.getElementById("Loader").style = "";
+
+            if (url.includes(".php")) {
+                makeRequest("GET", `https://scrap.torrentdev.workers.dev/?url=${url}&selector=div.wrap`).then(response => {
+                    if (response.status == 200) {
+                        console.log(response.responseText);
+
+                        var obj = JSON.parse(response.responseText);
+
+                        console.log(obj);
+
+                        document.getElementById("Loader").style = "display:none!important";
+                        var res = "<button class='btn btn-primary' onClick='initAgain()'>Go Back</button>";
+
+                        obj = obj.result[0].innerHTML;
+
+                        const parser = new DOMParser();
+                        var doc = parser.parseFromString(obj, "text/html");
+
+                        document.getElementById("Loader").style = "display:none!important";
+                        // var res = "";
+                        var a = doc.getElementsByTagName("img");
+
+                        for (c = 0; c < a.length; c++) {
+                            a[c].style.maxWidth = "100%";
+                            a[c].style.height = "auto";
+                        }
+
+                        doc.documentElement.style.width = "100%";
+                        document.getElementById('mainContent').appendChild(doc.documentElement);
+                        document.getElementById('mainContent').innerHTML = res + document.getElementById('mainContent').innerHTML;
+
+                    }
+
+                });
+            }
+
+            if (url.includes("links")) {
+                makeRequest("GET", `https://scrap.torrentdev.workers.dev/?url=${url}&selector=div.entry-content`).then(response => {
+                      var domain = url.split('/');
+                      domain = domain[0];
+                 
+                    if (response.status == 200) {
+                        console.log(response.responseText);
+
+                        var obj = JSON.parse(response.responseText);
+
+                        console.log(obj);
+
+                        document.getElementById("Loader").style = "display:none!important";
+                        var res = "<button class='btn btn-primary' onClick='initAgain()'>Go Back</button>";
+
+                        obj = obj.result[0].innerHTML;
+
+                        const parser = new DOMParser();
+                        var doc = parser.parseFromString(obj, "text/html");
+
+                        var a = doc.getElementsByTagName("a");
+                        for (c = 0; c < a.length; c++) {
+                            a[c].href = "javascript:loadEpisodes('" +domain + a[c].href + "');";
+                        }
+
+
+                        document.getElementById("Loader").style = "display:none!important";
+                        // var res = "";
+                        var a = doc.getElementsByTagName("img");
+
+                        for (c = 0; c < a.length; c++) {
+                            a[c].style.maxWidth = "100%";
+                            a[c].style.height = "auto";
+                        }
+
+                        doc.documentElement.style.width = "100%";
+                        document.getElementById('mainContent').appendChild(doc.documentElement);
+                        document.getElementById('mainContent').innerHTML = res + document.getElementById('mainContent').innerHTML;
+
+                    }
+
+                });
+            }
+
+
+
+
         }
 
 
