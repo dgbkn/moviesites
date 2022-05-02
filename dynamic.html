@@ -29,6 +29,9 @@
           <input type="search" id="form1" class="form-control" />
           <label class="form-label" for="form1">Search</label>
         </div>
+        <input type="submit" hidden />
+
+        
         <button type="button" class="btn btn-primary" onclick="doSearch()">
           <i class="fas fa-search"></i>
         </button>
@@ -66,84 +69,84 @@
   <script type="text/javascript" src="https://vegamovies.pages.dev/js/mdb.min.js"></script>
   <script type="text/javascript">
     var url = new URL(window.location.href);
-var domain = url.searchParams.get("domain");
-var DISABLEMOREPAGE = url.searchParams.get("DISABLEMOREPAGE");
-    
+    var domain = url.searchParams.get("domain");
+    var DISABLEMOREPAGE = url.searchParams.get("DISABLEMOREPAGE");
+
 
 
     function makeRequest(method, url) {
-    return new Promise(function (resolve, reject) {
+      return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
         xhr.open(method, url);
         xhr.onload = function () {
-            if (this.status >= 200 && this.status < 300) {
-                resolve({
-                    status: this.status,
-                    statusText: xhr.statusText,
-                    responseText:xhr.responseText
-                });
-            } else {
-                reject({
-                    status: this.status,
-                    statusText: xhr.statusText
-                });
-            }
+          if (this.status >= 200 && this.status < 300) {
+            resolve({
+              status: this.status,
+              statusText: xhr.statusText,
+              responseText: xhr.responseText
+            });
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
         };
         xhr.onerror = function () {
-            reject({
-                status: this.status,
-                statusText: xhr.statusText
-            });
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
         };
         xhr.send();
-    });
-}
+      });
+    }
 
-function getWordStr(str) {
-    return str.split(/\s+/).slice(0,10).join(" ");
-}
-
-
+    function getWordStr(str) {
+      return str.split(/\s+/).slice(0, 10).join(" ");
+    }
 
 
 
 
 
-// var baseUrl = "https://thawning.tanishagoyal.repl.co/api?uri=";
-
-// function getCategoryUri(catid){
-//     return(baseUrl + encodeURIComponent(domain + "/wp-json/wp/v2/posts?_embed&categories="+catid));
-// }
 
 
-// function getSearchurl(query){
-//     // return `${baseUrl + encodeURIComponent(`/wp-json/wp/v2/search?_embed&search=${query}&per_page=10`) }`;
-//     return `${baseUrl + encodeURIComponent(domain +`/wp-json/wp/v2/posts?_embed&search=${query}&per_page=70`) }`;
-// }
+    // var baseUrl = "https://thawning.tanishagoyal.repl.co/api?uri=";
 
-// var latestPosts = baseUrl + encodeURIComponent(domain +"/wp-json/wp/v2/posts?_embed=1&per_page=50");
-
-
-var baseUrl = "https://home.techiebank.workers.dev/http/";
-
-function getCategoryUri(catid){
-    return(baseUrl + domain + "/wp-json/wp/v2/posts?_embed&categories="+catid);
-}
+    // function getCategoryUri(catid){
+    //     return(baseUrl + encodeURIComponent(domain + "/wp-json/wp/v2/posts?_embed&categories="+catid));
+    // }
 
 
-function getSearchurl(query){
-    // return `${baseUrl + encodeURIComponent(`/wp-json/wp/v2/search?_embed&search=${query}&per_page=10`) }`;
-      if(DISABLEMOREPAGE){
-                    return `${baseUrl + domain +`/wp-json/wp/v2/posts?_embed&search=${query}` }`;
-      }else{
-            return `${baseUrl + domain +`/wp-json/wp/v2/posts?_embed&search=${query}&per_page=70` }`;
+    // function getSearchurl(query){
+    //     // return `${baseUrl + encodeURIComponent(`/wp-json/wp/v2/search?_embed&search=${query}&per_page=10`) }`;
+    //     return `${baseUrl + encodeURIComponent(domain +`/wp-json/wp/v2/posts?_embed&search=${query}&per_page=70`) }`;
+    // }
+
+    // var latestPosts = baseUrl + encodeURIComponent(domain +"/wp-json/wp/v2/posts?_embed=1&per_page=50");
+
+
+    var baseUrl = "https://home.techiebank.workers.dev/http/";
+
+    function getCategoryUri(catid) {
+      return (baseUrl + domain + "/wp-json/wp/v2/posts?_embed&categories=" + catid);
+    }
+
+
+    function getSearchurl(query) {
+      // return `${baseUrl + encodeURIComponent(`/wp-json/wp/v2/search?_embed&search=${query}&per_page=10`) }`;
+      if (DISABLEMOREPAGE) {
+        return `${baseUrl + domain + `/wp-json/wp/v2/posts?_embed&search=${query}`}`;
+      } else {
+        return `${baseUrl + domain + `/wp-json/wp/v2/posts?_embed&search=${query}&per_page=70`}`;
       }
-}
+    }
 
-    if(DISABLEMOREPAGE){
-      var latestPosts = baseUrl + domain +"/wp-json/wp/v2/posts?_embed";
-    }else{
-            var latestPosts = baseUrl + domain +"/wp-json/wp/v2/posts?_embed&per_page=50";
+    if (DISABLEMOREPAGE) {
+      var latestPosts = baseUrl + domain + "/wp-json/wp/v2/posts?_embed";
+    } else {
+      var latestPosts = baseUrl + domain + "/wp-json/wp/v2/posts?_embed&per_page=50";
     }
 
 // async function getLatestPosts(){
@@ -174,13 +177,13 @@ function getSearchurl(query){
           // content = content.replace("https://i.imgur.com/", "https://thawning.tanishagoyal.repl.co/api?uri=https://i.imgur.com/");
           content = content.replaceAll('/download/?key=', 'https://flaskstreamer.lolhoinc.repl.co/olamov?key=');
           // content = content.replace('https://olamovies.site', 'https://thawning.tanishagoyal.repl.co/api?uri=https://olamovies.site');
-      
-          if(Array.isArray(i["_embedded"]["wp:featuredmedia"])){
-                var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
-              }
-              else{
-                var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
-              }
+
+          if (Array.isArray(i["_embedded"]["wp:featuredmedia"])) {
+            var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
+          }
+          else {
+            var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
+          }
 
 
           // console.log(i);
@@ -262,10 +265,10 @@ function getSearchurl(query){
               var content = i['content']['rendered'];
               content = content.replaceAll('/download/?key=', 'https://flaskstreamer.lolhoinc.repl.co/olamov?key=');
 
-              if(Array.isArray(i["_embedded"]["wp:featuredmedia"])){
+              if (Array.isArray(i["_embedded"]["wp:featuredmedia"])) {
                 var img = i["_embedded"]["wp:featuredmedia"][0]["source_url"];
               }
-              else{
+              else {
                 var img = "https://images.pexels.com/photos/771742/pexels-photo-771742.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500";
               }
 
