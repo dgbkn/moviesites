@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <title>lordhd Site</title>
+  <!-- MDB icon -->
+  <link rel="icon" href="https://vegamovies.pages.dev/img/mdb-favicon.ico" type="image/x-icon" />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+  <!-- Google Fonts Roboto -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" />
+  <!-- MDB -->
+  <link rel="stylesheet" href="https://vegamovies.pages.dev/css/mdb.min.css" />
+</head>
+
+<body>
+
+
+
+  <nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand">lordhd Site</a>
+
+      <div class="input-group d-flex w-auto">
+        <div class="form-outline">
+          <input type="search" id="form1" class="form-control" />
+          <label class="form-label" for="form1">Search</label>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="doSearch()">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+
+    </div>
+  </nav>
+
+
+
+  <div class="d-flex justify-content-center" id="Loader">
+    <div class="spinner-border m-5 text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+
+
+
+
+
+
+  <!-- Start your project here-->
+  <div class="container row  w-auto" id="mainContent" style="margin: 10px;margin-top: 30px;">
+
+  </div>
+  <!-- End your project here-->
+
+
+
+
+
+  <!-- MDB -->
+  <script type="text/javascript" src="https://vegamovies.pages.dev/js/mdb.min.js"></script>
+  <script type="text/javascript">
+    var url = new URL(window.location.href);
+
+
+    function makeRequest(method, url) {
+      return new Promise(function (resolve, reject) {
+        let xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+        xhr.onload = function () {
+          if (this.status >= 200 && this.status < 300) {
+            resolve({
+              status: this.status,
+              statusText: xhr.statusText,
+              responseText: xhr.responseText
+            });
+          } else {
+            reject({
+              status: this.status,
+              statusText: xhr.statusText
+            });
+          }
+        };
+        xhr.onerror = function () {
+          reject({
+            status: this.status,
+            statusText: xhr.statusText
+          });
+        };
+        xhr.send();
+      });
+    }
+
+    function getWordStr(str) {
+      return str.split(/\s+/).slice(0, 10).join(" ");
+    }
+
+
+    var baseUrl = "https://www.wcofun.com/wp-json/wp/v2/";
+
+
+    function getCategoryUri(catid) {
+      return (baseUrl + "posts?_embed&per_page=100&categories=" + catid);
+    }
+
+
+    function getSearchurl(query) {
+      var tamilmc = `https://vegamovies.nl/?s=${query}`;
+
+      // var selector = "#elSearch_main > div > ol";
+      var selector = "div.post-item-wrap";
+
+      return `https://scrap.torrentdev.workers.dev/?url=${encodeURIComponent(tamilmc)}&selector=${encodeURIComponent(selector)}`;
+    }
+
+    var latestPosts = "https://scrap.torrentdev.workers.dev/?url=lordhd.org&selector=body";
+
+
+  </script>
+  <!-- Custom scripts -->
+  <script type="text/javascript">
+
+    function initAgain() {
+      document.getElementById('mainContent').style.backgroundColor = "";
+      document.getElementById('mainContent').style.color = "";
+
+      document.getElementById('mainContent').innerHTML = ``;
+      document.getElementById("Loader").style = "";
+
+
+      makeRequest("GET", latestPosts).then(response => {
+
+        if (response.status == 200) {
+          console.log(response.responseText);
+
+          var obj = JSON.parse(response.responseText);
+
+          console.log(obj);
+          obj = obj.result[0].innerHTML;
+
+          const parser = new DOMParser();
+          var doc = parser.parseFromString(obj, "text/html");
+
+          // var a = doc.getElementsByTagName("a");
+          var posts = doc.querySelectorAll("a.ml-mask.jt");
+
+          // for (c = 0; c < a.length; c++) {
+
+          //   a[c].href = "javascript:loadEpisodes('" + a[c].href + "');";
+
+          //   console.log(a[c].href);
+          // }
+
+
+          var res = ``;
+
+          for (c = 0; c < posts.length; c++) {
+            var post = parser.parseFromString(posts[c].innerHTML, "text/html");
+            var img = post.getElementsByTagName('img')[0].src;
+            var anchor = post.href;
+            var text = post.querySelector('span.mli-info').innerText;
+            
+
+            res = res + `
+<div class="col-lg-3 col-md-6 col-sm-12 ">
+<div class="card">
+<div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+<img src="${img}" class="img-fluid"/>
+<a href="#!">
+<div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+</a>
+</div>
+<div class="card-body">
+<h5 class="card-title">${text}</h5>
+<button class="btn btn-primary" data-mdb-toggle="modal" onclick="loadEpisodes('${anchor}')">OPEN</button>
+</div>
+</div>
+</div>
+`;
+          }
+
+
+          document.getElementById("Loader").style = "display:none!important";
+
+          document.getElementById('mainContent').innerHTML = res;
+
+        }
+
+
+      });
+    }
+
+    initAgain();
+
+
+
+
+    function doSearch() {
+
+      if (document.getElementById('form1').value) {
+
+        document.getElementById('mainContent').innerHTML = ``;
+
+        document.getElementById("Loader").style = "";
+
+        var url = getSearchurl(document.getElementById('form1').value);
+
+        makeRequest("GET", url).then(response => {
+
+          if (response.status == 200) {
+            console.log(response.responseText);
+
+            var obj = JSON.parse(response.responseText);
+
+            console.log(obj);
+
+            obj = obj.result;
+            var res = ``;
+
+
+            obj.forEach(element => {
+              var html = element.innerHTML;
+              const parser = new DOMParser();
+              var post = parser.parseFromString(html, "text/html");
+
+              var img = post.getElementsByTagName('img')[0].src;
+              var anchor = post.getElementsByTagName('a');
+              anchor = anchor[anchor.length - 1];
+
+              res = res + `
+<div class="col-lg-3 col-md-6 col-sm-12 ">
+<div class="card">
+<div class="bg-image hover-overlay ripple" data-mdb-ripple-color="light">
+<img src="${img}" class="img-fluid"/>
+<a href="#!">
+<div class="mask" style="background-color: rgba(251, 251, 251, 0.15);"></div>
+</a>
+</div>
+<div class="card-body">
+<h5 class="card-title">${anchor.innerText}</h5>
+<button class="btn btn-primary" data-mdb-toggle="modal" onclick="loadEpisodes('${anchor.href}')">OPEN</button>
+</div>
+</div>
+</div>
+`;
+
+            });
+
+
+            document.getElementById("Loader").style = "display:none!important";
+            document.getElementById('mainContent').innerHTML = res;
+
+
+          }
+
+
+        });
+
+
+
+      }
+    }
+
+
+
+
+
+
+    function loadEpisodes(url) {
+      document.getElementById('mainContent').innerHTML = ``;
+      document.getElementById("Loader").style = "";
+
+      makeRequest("GET", `https://scrap.torrentdev.workers.dev/?url=${url}&selector=div%23content-embed`).then(response => {
+        if (response.status == 200) {
+          console.log(response.responseText);
+
+          var obj = JSON.parse(response.responseText);
+
+          console.log(obj);
+
+          document.getElementById("Loader").style = "display:none!important";
+          var res = "<button class='btn btn-primary' onClick='initAgain()'>Go Back</button>";
+
+          obj = obj.result[0].innerHTML;
+
+          const parser = new DOMParser();
+          var doc = parser.parseFromString(obj, "text/html");
+
+          document.getElementById("Loader").style = "display:none!important";
+          // var res = "";
+
+        //   var a = doc.getElementsByTagName("img");
+
+        //   for (c = 0; c < a.length; c++) {
+        //     a[c].style.maxWidth = "100%";
+        //     a[c].style.height = "auto";
+        //   }
+
+          // var a = doc.getElementsByTagName("a");
+
+          // for (c = 0; c < a.length; c++) {
+          //   a[c].target = "";
+          //   a[c].href = "javascript:loadURL('" + a[c].href + "');";
+          // }
+
+          doc.documentElement.style.width = "100%";
+
+          document.getElementById('mainContent').style.backgroundColor = "black";
+          document.getElementById('mainContent').style.color = "white";
+
+          document.getElementById('mainContent').appendChild(doc.documentElement);
+          document.getElementById('mainContent').innerHTML = res + document.getElementById('mainContent').innerHTML;
+
+        }
+
+
+      });
+
+
+
+
+    }
+
+
+    function loadURL(uri) {
+
+      makeRequest("GET", `https://scrap.torrentdev.workers.dev/?url=${encodeURIComponent(uri)}&selector=body`).then(response => {
+
+        if (response.status == 200) {
+          console.log(response.responseText);
+          var obj = JSON.parse(response.responseText);
+
+          console.log(obj);
+          obj = obj.result[0].innerHTML;
+
+          obj = obj.replaceAll("101desire.com", "reflare-app.torrentdev.workers.dev");
+
+          const parser = new DOMParser();
+          var doc = parser.parseFromString(obj, "text/html");
+
+          var a = doc.getElementsByTagName("input");
+
+
+          var post_url = doc.getElementsByTagName("form")[0].action;
+
+
+          const formData = new FormData(doc.getElementsByTagName("form")[0]);
+          const data = [...formData.entries()];
+
+
+
+          //post from here
+          const params = [...formData.entries()];
+
+          var param = {};
+
+
+          params.forEach(c => {
+            param[c[0]] = c[1];
+
+          });
+
+
+          console.log(param);
+            var form = doc.getElementById('landing');
+
+          var post_url = form.action;
+
+          post(post_url, param);
+          //post from here
+
+
+          // const asString = data
+          // .map(x => `${encodeURIComponent(x[0])}=${encodeURIComponent(x[1])}`)
+          // .join('&');
+
+
+          // var http = new XMLHttpRequest();
+          // var params = asString;
+          // http.open('POST',post_url, true);
+
+          // //Send the proper header information along with the request
+          // http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+          // http.onreadystatechange = function () {//Call a function when the state changes.
+          //   if (http.readyState == 4 && http.status == 200) {
+          //     const parser = new DOMParser();
+          //     var doc = parser.parseFromString(http.responseText, "text/html");
+          //     var form = doc.getElementById('landing');
+          //     const formData = new FormData(form);
+          //     const params = [...formData.entries()];
+
+          //     var param = {};
+
+
+          //     params.forEach(c => {
+          //       param[c[0]] = c[1];
+
+          //     });
+
+
+          //     console.log(param);
+
+          //     var post_url = form.action;
+
+          //     post(post_url,param);
+
+          //   }
+          // }
+
+          // http.send(params);
+
+
+        }
+
+      });
+
+
+    }
+
+    /**
+ * sends a request to the specified url from a form. this will change the window location.
+ * @param {string} path the path to send the post request to
+ * @param {object} params the parameters to add to the url
+ * @param {string} [method=post] the method to use on the form
+ */
+
+    function post(path, params, method = 'post') {
+
+      // The rest of this code assumes you are not using a library.
+      // It can be made less verbose if you use one.
+      const form = document.createElement('form');
+      form.method = method;
+      form.action = path;
+
+      for (const key in params) {
+        if (params.hasOwnProperty(key)) {
+          const hiddenField = document.createElement('input');
+          hiddenField.type = 'hidden';
+          hiddenField.name = key;
+          hiddenField.value = params[key];
+
+          form.appendChild(hiddenField);
+        }
+      }
+
+      document.body.appendChild(form);
+      form.submit();
+    }
+
+
+
+
+
+  </script>
+</body>
+
+</html>
