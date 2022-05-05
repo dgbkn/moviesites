@@ -113,7 +113,7 @@
       var tamilmc = `https://lordhd.org/?s=${query}`;
 
       // var selector = "#elSearch_main > div > ol";
-      var selector = "a.ml-mask.jt";
+      var selector = "div.ml-item";
 
       return `https://scrap.torrentdev.workers.dev/?url=${encodeURIComponent(tamilmc)}&selector=${encodeURIComponent(selector)}`;
     }
@@ -147,7 +147,7 @@
           var doc = parser.parseFromString(obj, "text/html");
 
           // var a = doc.getElementsByTagName("a");
-          var posts = doc.querySelectorAll("a.ml-mask.jt");
+          var posts = doc.querySelectorAll("div.ml-item");
 
           // for (c = 0; c < a.length; c++) {
 
@@ -161,8 +161,8 @@
 
           for (c = 0; c < posts.length; c++) {
             var post = parser.parseFromString(posts[c].innerHTML, "text/html");
-            var img = post.getElementsByTagName('img')[0].src;
-            var anchor = post.href;
+            var img = post.getElementsByTagName('img')[0].getAttribute("data-original");
+            var anchor = post.querySelector('a.ml-mask.jt').href;
             var text = post.querySelector('span.mli-info').innerText;
             
 
@@ -228,8 +228,8 @@
               const parser = new DOMParser();
               var post = parser.parseFromString(html, "text/html");
 
-              var img = post.getElementsByTagName('img')[0].src;
-            var anchor = post.href;
+            var img = post.getElementsByTagName('img')[0].getAttribute("data-original");
+            var anchor = post.querySelector('a.ml-mask.jt').href;
             var text = post.querySelector('span.mli-info').innerText;
 
               res = res + `
