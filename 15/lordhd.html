@@ -110,10 +110,10 @@
 
 
     function getSearchurl(query) {
-      var tamilmc = `https://vegamovies.nl/?s=${query}`;
+      var tamilmc = `https://lordhd.org/?s=${query}`;
 
       // var selector = "#elSearch_main > div > ol";
-      var selector = "div.post-item-wrap";
+      var selector = "a.ml-mask.jt";
 
       return `https://scrap.torrentdev.workers.dev/?url=${encodeURIComponent(tamilmc)}&selector=${encodeURIComponent(selector)}`;
     }
@@ -229,8 +229,8 @@
               var post = parser.parseFromString(html, "text/html");
 
               var img = post.getElementsByTagName('img')[0].src;
-              var anchor = post.getElementsByTagName('a');
-              anchor = anchor[anchor.length - 1];
+            var anchor = post.href;
+            var text = post.querySelector('span.mli-info').innerText;
 
               res = res + `
 <div class="col-lg-3 col-md-6 col-sm-12 ">
@@ -242,8 +242,8 @@
 </a>
 </div>
 <div class="card-body">
-<h5 class="card-title">${anchor.innerText}</h5>
-<button class="btn btn-primary" data-mdb-toggle="modal" onclick="loadEpisodes('${anchor.href}')">OPEN</button>
+<h5 class="card-title">${text}</h5>
+<button class="btn btn-primary" data-mdb-toggle="modal" onclick="loadEpisodes('${anchor}')">OPEN</button>
 </div>
 </div>
 </div>
